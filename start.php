@@ -39,41 +39,6 @@ $worker->onWorkerStart = function ($worker) {
         $connection->id = $worker->id . "_" . $connection->id;
     };
 
-    // 当收到客户端发来的数据后返回hello $data给客户端
-    $worker->onMessage = function (TcpConnection $connection, $data) use ($worker) {
-        echo "--------onMessage--------\n";
-
-        // 向客户端发送hello $data
-        echo 'onMessage : Pid is ' . posix_getpid() . "\n";
-
-        $reply = 'hello connect ID : ' . $connection->id . "\nhello content : " . $data;
-        echo $reply . "\n";
-
-        $rawData = json_decode($data, true);
-        if ($rawData && isset($rawData['to_connectId'])) {
-            //還沒搞定如果在worker 2 (進程ＩＤ ２)的情況下，怎麼發訊息給進程ＩＤ為１的人？
-            $worker->connections[1]->send(json_encode($worker->connections));
-        } else {
-            $connection->send($reply);
-        }
-
-        // 已经处理请求数
-        static $request_count = 0;
-        echo "request count : " . $request_count . "\n";
-
-        // 如果请求数达到1000
-        if (++$requestcount >= MAXREQUEST) {
-            echo 'auto reload workerman' . "\n";
-            /*
-        * 退出当前进程，主进程会立刻重新启动一个全新进程补充上来
-        * 从而完成进程重启
-        */
-            Worker::stopAll();
-        }
-
-        echo "-------------------\n";
-    };
-
     //只在id編號為０的進程加上定時器
     if ($worker->id == 0) {
         // 定时，每5秒一次
@@ -113,6 +78,35 @@ $worker->onWorkerStart = function ($worker) {
 
 //     echo "-------------------\n";
 // };
+
+ // 当收到客户端发来的数据后返回hello $data给客户端
+ $worker->onMessage = function (TcpConnection $connection, $data) use ($worker) {
+    echo "--------onMessage--------\n";
+
+    // 向客户端发送hello $data
+    echo 'onMessage : Pid is ' . posix_getpid() . "\n";
+
+    $reply = 'hello connect ID : ' . $connection->id . "\nhello content : " . $data;
+    echo $reply . "\n";
+
+    $connection->send($reply);
+
+    // 已经处理请求数
+    static $request_count = 0;
+    echo "request count : " . $request_count . "\n";
+
+    // 如果请求数达到1000
+    if (++$request_count >= MAX_REQUEST) {
+        echo 'auto reload workerman' . "\n";
+        /*
+    * 退出当前进程，主进程会立刻重新启动一个全新进程补充上来
+    * 从而完成进程重启
+    */
+        Worker::stopAll();
+    }
+
+    echo "-------------------\n";
+};
 
 $worker->onClose = function (TcpConnection $connection) {
     echo "--------onClose--------\n";
