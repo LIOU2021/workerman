@@ -2,8 +2,9 @@
 - 監聽127.0.0.1:2000
 - 不同worker(proccess/進程)不能溝通
 - connect id 編制規則為: workerId_connectId
-# data from client
 
+# data from client
+- type : message/info。message表示當通訊用。info表示獲取worker相關資訊。
 - to : user/all。user表示一對一，all表示一對全部。
 - msg : 信息內容
 - to_user : 當to這個key為user時，就會判讀to_user來決定要傳給哪個收訊息的人
@@ -38,6 +39,11 @@ ws.send(JSON.stringify(msg));
 msg={
     to:'all',
     msg:'大家好',
+};
+ws.send(JSON.stringify(msg));
+
+msg={
+    type:'info'
 };
 ws.send(JSON.stringify(msg));
 ```
