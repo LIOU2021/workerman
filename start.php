@@ -3,6 +3,7 @@
 use Workerman\Worker;
 use Workerman\Connection\TcpConnection;
 use Workerman\Events\EventInterface;
+use Workerman\Service\MessageService;
 use Workerman\Timer;
 
 require_once __DIR__ . '/vendor/autoload.php';
@@ -79,8 +80,8 @@ $worker->onWorkerStart = function ($worker) {
 //     echo "-------------------\n";
 // };
 
- // 当收到客户端发来的数据后返回hello $data给客户端
- $worker->onMessage = function (TcpConnection $connection, $data) use ($worker) {
+// 当收到客户端发来的数据后返回hello $data给客户端
+$worker->onMessage = function (TcpConnection $connection, $data) use ($worker) {
     echo "--------onMessage--------\n";
 
     // 向客户端发送hello $data
@@ -90,6 +91,7 @@ $worker->onWorkerStart = function ($worker) {
     echo $reply . "\n";
 
     $connection->send($reply);
+    MessageService::send($worker, $connection, $data);
 
     // 已经处理请求数
     static $request_count = 0;
