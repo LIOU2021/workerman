@@ -17,8 +17,8 @@ $worker->name = 'MyWebsocketWorker';
 // 每个进程最多执行1000个请求
 define('MAX_REQUEST', 1000);
 
-// 启动2个进程对外提供服务
-$worker->count = 2;
+// 启动1个进程对外提供服务。由於是要使用在通訊用途，所以設定一個進程，避免進程間無法溝通問題。
+$worker->count = 1;
 
 $worker->onWorkerStart = function ($worker) {
     echo "--------onWorkerStart--------\n";
