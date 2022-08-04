@@ -5,7 +5,7 @@ use Workerman\Connection\TcpConnection;
 use Workerman\Events\EventInterface;
 use Workerman\Timer;
 
-requireonce _DIR . '/vendor/autoload.php';
+require_once __DIR__ . '/vendor/autoload.php';
 
 // 注意：这里与上个例子不同，使用的是websocket协议
 $worker = new Worker("websocket://0.0.0.0:2000");
