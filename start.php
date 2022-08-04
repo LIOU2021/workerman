@@ -1,19 +1,125 @@
 <?php
+
 use Workerman\Worker;
 use Workerman\Connection\TcpConnection;
-require_once __DIR__ . '/vendor/autoload.php';
+use Workerman\Events\EventInterface;
+use Workerman\Timer;
+
+requireonce _DIR . '/vendor/autoload.php';
 
 // 注意：这里与上个例子不同，使用的是websocket协议
-$ws_worker = new Worker("websocket://0.0.0.0:2000");
+$worker = new Worker("websocket://0.0.0.0:2000");
 
-// 启动4个进程对外提供服务
-$ws_worker->count = 4;
+// 设置实例的名称
+$worker->name = 'MyWebsocketWorker';
 
-// 当收到客户端发来的数据后返回hello $data给客户端
-$ws_worker->onMessage = function(TcpConnection $connection, $data)
-{
-    // 向客户端发送hello $data
-    $connection->send('hello ' . $data);
+// 每个进程最多执行1000个请求
+define('MAX_REQUEST', 1000);
+
+// 启动2个进程对外提供服务
+$worker->count = 2;
+
+$worker->onWorkerStart = function ($worker) {
+    echo "--------onWorkerStart--------\n";
+
+    //DB類的初始撰寫注意地方
+    // https://www.workerman.net/doc/workerman/faq/callback_methods.html#3%E3%80%81%E7%B1%BB%E6%96%B9%E6%B3%95%E4%BD%9C%E4%B8%BA%E5%9B%9E%E8%B0%83
+
+    echo "worker->id={$worker->id}\n";
+
+    if ($worker->id == 0) {
+        echo "i am 0 process \n";
+    } else {
+    }
+
+    //https://www.workerman.net/doc/workerman/tcp-connection/id.html#id
+    //賦予每個coonnectID都為獨立的ID，所以加上進程id當作前綴．結果就是這裡的connect是每個連線user的獨立id．
+    $worker->onConnect = function (TcpConnection $connection) use ($worker) {
+        //
+        $connection->id = $worker->id . "_" . $connection->id;
+    };
+
+    // 当收到客户端发来的数据后返回hello $data给客户端
+    $worker->onMessage = function (TcpConnection $connection, $data) use ($worker) {
+        echo "--------onMessage--------\n";
+
+        // 向客户端发送hello $data
+        echo 'onMessage : Pid is ' . posix_getpid() . "\n";
+
+        $reply = 'hello connect ID : ' . $connection->id . "\nhello content : " . $data;
+        echo $reply . "\n";
+
+        $rawData = json_decode($data, true);
+        if ($rawData && isset($rawData['to_connectId'])) {
+            //還沒搞定如果在worker 2 (進程ＩＤ ２)的情況下，怎麼發訊息給進程ＩＤ為１的人？
+            $worker->connections[1]->send(json_encode($worker->connections));
+        } else {
+            $connection->send($reply);
+        }
+
+        // 已经处理请求数
+        static $request_count = 0;
+        echo "request count : " . $request_count . "\n";
+
+        // 如果请求数达到1000
+        if (++$requestcount >= MAXREQUEST) {
+            echo 'auto reload workerman' . "\n";
+            /*
+        * 退出当前进程，主进程会立刻重新启动一个全新进程补充上来
+        * 从而完成进程重启
+        */
+            Worker::stopAll();
+        }
+
+        echo "-------------------\n";
+    };
+
+    //只在id編號為０的進程加上定時器
+    if ($worker->id == 0) {
+        // 定时，每5秒一次
+        // Timer::add(5, function () use ($worker) {
+        //     // 遍历当前进程所有的客户端连接，发送当前服务器的时间
+        //     foreach ($worker->connections as $connection) {
+        //         $connection->send("only process worker_id 0 : " . time());
+        //     }
+        // });
+
+        //指定worker id 為 0的onConnect，如果這裡寫了，那麼後面主進程綁定的onConnect事件將會被覆蓋掉
+        // $worker->onConnect = function (TcpConnection $connection) {
+        //     echo "worker_ID 0 : connect ID : " . $connection->id . "\n";
+        //     echo "worker_ID 0 : new connection from ip " . $connection->getRemoteIp() . "\n";
+        // };
+    }
+
+
+    // 定时，每10秒一次
+    // Timer::add(10, function () use ($worker) {
+    //     // 遍历当前进程所有的客户端连接，发送当前服务器的时间
+    //     foreach ($worker->connections as $connection) {
+    //         $connection->send("to all people : " . time());
+    //     }
+    // });
+
+    echo 'Pid is ' . posix_getpid() . "\n";
+    echo "-------------------\n";
+};
+
+//因為在onWorker註冊了onConnect了，這裡的註冊事件將會被覆蓋
+// $worker->onConnect = function (TcpConnection $connection) {
+//     echo "--------onConnect--------\n";
+
+//     echo "connect ID : " . $connection->id . "\n";
+//     echo "new connection from ip " . $connection->getRemoteIp() . "\n";
+
+//     echo "-------------------\n";
+// };
+
+$worker->onClose = function (TcpConnection $connection) {
+    echo "--------onClose--------\n";
+
+    echo "connect_id {$connection->id} logout ! \n";
+    echo "connection closed\n";
+    echo "-------------------\n";
 };
 
 // 运行worker
