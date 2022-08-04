@@ -1,6 +1,13 @@
 # start
+- 監聽127.0.0.1:2000
 - 不同worker(proccess/進程)不能溝通
 - connect id 編制規則為: workerId_connectId
+# data from client
+
+- to : user/all。user表示一對一，all表示一對全部。
+- msg : 信息內容
+- to_user : 當to這個key為user時，就會判讀to_user來決定要傳給哪個收訊息的人
+
 
 # REF
 - [程序(進程)、執行緒(線程)、協程，傻傻分得清楚！](https://oldmo860617.medium.com/%E9%80%B2%E7%A8%8B-%E7%B7%9A%E7%A8%8B-%E5%8D%94%E7%A8%8B-%E5%82%BB%E5%82%BB%E5%88%86%E5%BE%97%E6%B8%85%E6%A5%9A-a09b95bd68dd)
@@ -25,6 +32,12 @@ msg={
     to:'user',
     msg:'安安你好',
     to_user:'0_2'
+};
+ws.send(JSON.stringify(msg));
+
+msg={
+    to:'all',
+    msg:'大家好',
 };
 ws.send(JSON.stringify(msg));
 ```
