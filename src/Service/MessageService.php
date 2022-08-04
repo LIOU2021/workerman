@@ -13,37 +13,41 @@ class MessageService
         if ($json) {
             self::readType($worker, $connection, $msg);
         } else {
-            $connection->send("不是json格式 : " . $msg);
+            $res = json_encode(helpReturn(400, $msg));
+            $connection->send($res);
         }
     }
 
     private static function readType(Worker $worker, TcpConnection $connection, $msg)
     {
-        $json = json_decode($msg,true);
+        $json = json_decode($msg, true);
         if (isset($json['type'])) {
             switch ($json['type']) {
                 case 'message':
                     self::useTo($worker, $connection, $msg);
                     break;
                 case 'info':
-                    self::getInfo($connection,$worker);
+                    self::getInfo($connection, $worker);
                     break;
                 default:
-                    $connection->send("type not find ! : " . $msg);
+                    $res = json_encode(helpReturn(401, $msg));
+                    $connection->send($res);
                     break;
             }
         } else {
-            $connection->send("type undefined ! : " . $msg);
+            $res = json_encode(helpReturn(402, $msg));
+            $connection->send($res);
         }
     }
     /**
      * return all worker info
      */
-    private static function getInfo(TcpConnection $connection,Worker $worker)
+    private static function getInfo(TcpConnection $connection, Worker $worker)
     {
-        $res['connectId']=$connection->id;
-        $res['allConnect']=$worker->connections;
-        $connection->send(json_encode($res));
+        $res['connectId'] = $connection->id;
+        $res['allConnect'] = $worker->connections;
+        $rep = json_encode(helpReturn(200, $res));
+        $connection->send($rep);
     }
 
     /**
@@ -51,7 +55,7 @@ class MessageService
      */
     private static function useTo(Worker $worker, $connection, $msg)
     {
-        $json = json_decode($msg,true);
+        $json = json_decode($msg, true);
         if (isset($json['to'])) {
             // $connection->send("有用to哦 : " . $json['msg']);
 
@@ -61,7 +65,9 @@ class MessageService
                     //循环用户id，并发送信息
                     foreach ($worker->connections as $conn) {
                         //给用户发送信息
-                        $conn->send("用户id[{$connection->id}] 廣播 说: {$json['msg']}");
+                        $reply = "用户id[{$connection->id}] 廣播 说: {$json['msg']}";
+                        $res = json_encode(helpReturn(200, $reply));
+                        $conn->send($res);
                     }
 
                     // $connection->send("to type all : " . $json['msg']);
@@ -69,17 +75,29 @@ class MessageService
                 case 'user':
                     if (isset($json['to_user'])) {
                         $conectId = explode("_", $json['to_user'])[1];
-                        $worker->connections[$conectId]->send("用户id[{$connection->id}] 私下 说: {$json['msg']}");
+                        $reply = "用户id[{$connection->id}] 私下 说: {$json['msg']}";
+                        $res = json_encode(helpReturn(200, $reply));
+                        if(isset($worker->connections[$conectId])){
+                            $worker->connections[$conectId]->send($res);
+                            $connection->send(json_encode(helpReturn()));
+                        }else{
+                            $res = json_encode(helpReturn(405, $conectId));
+                            $connection->send($res);
+                        }
+                        
                     } else {
-                        $connection->send("user connect id not find: " . $json['msg']);
+                        $res = json_encode(helpReturn(403, $json));
+                        $connection->send($res);
                     }
                     break;
                 default:
-                    $connection->send("to type default : " . $json['msg']);
+                    $res = json_encode(helpReturn(404, $json));
+                    $connection->send($res);
                     break;
             }
         } else {
-            $connection->send("沒有to這個key : " . $msg);
+            $res = json_encode(helpReturn(402, $msg));
+            $connection->send($res);
         }
     }
 }

@@ -37,6 +37,7 @@ msg={
 ws.send(JSON.stringify(msg));
 
 msg={
+    type:'message',
     to:'all',
     msg:'大家好',
 };
