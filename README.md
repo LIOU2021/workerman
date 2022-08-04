@@ -1,3 +1,34 @@
+# Demo
+```
+／／在chrom瀏覽器開發模式輸入底下
+
+ws = new WebSocket("ws://localhost:2000");
+ws.onopen = function() {
+    alert("连接成功");
+    ws.send('tom');
+    alert("给服务端发送一个字符串：tom");
+};
+ws.onmessage = function(e) {
+    alert("收到服务端的消息：" + e.data);
+};
+
+```
+
+## Available commands
+```php start.php start  ```  
+```php start.php start -d  ```  
+```php start.php status  ```  
+```php start.php status -d  ```  
+```php start.php connections```  
+```php start.php stop  ```  
+```php start.php stop -g  ```  
+```php start.php restart  ```  
+```php start.php reload  ```  
+```php start.php reload -g  ```
+
+# ref
+- [official github](https://github.com/walkor/workerman)
+
 # Workerman
 [![Gitter](https://badges.gitter.im/walkor/Workerman.svg)](https://gitter.im/walkor/Workerman?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=body_badge)
 [![Latest Stable Version](https://poser.pugx.org/workerman/workerman/v/stable)](https://packagist.org/packages/workerman/workerman)
