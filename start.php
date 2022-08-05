@@ -40,7 +40,7 @@ $worker->onWorkerStart = function ($worker) {
         $connection->id = $worker->id . "_" . $connection->id;
         $msg = "online ! connection_id : " . $connection->id ;
         echo $msg . "\n";
-        MessageService::toAll($worker, $msg);
+        MessageService::onConnect($worker,$connection->id);
         echo "-------------------\n";
     };
 
@@ -95,7 +95,7 @@ $worker->onMessage = function (TcpConnection $connection, $data) use ($worker) {
     echo $reply . "\n";
 
     $connection->send($reply);
-    MessageService::send($worker, $connection, $data);
+    MessageService::onMessage($worker, $connection, $data);
 
     // 已经处理请求数
     static $request_count = 0;
@@ -119,7 +119,7 @@ $worker->onClose = function (TcpConnection $connection) use ($worker) {
 
     $msg = "connect_id {$connection->id} logout !";
     echo $msg . "\n";
-    MessageService::toAll($worker, $msg);
+    MessageService::onClose($worker,$connection->id);
     echo "connection closed\n";
     echo "-------------------\n";
 };

@@ -15,6 +15,18 @@
 - [程序(進程)、執行緒(線程)、協程，傻傻分得清楚！](https://oldmo860617.medium.com/%E9%80%B2%E7%A8%8B-%E7%B7%9A%E7%A8%8B-%E5%8D%94%E7%A8%8B-%E5%82%BB%E5%82%BB%E5%88%86%E5%BE%97%E6%B8%85%E6%A5%9A-a09b95bd68dd)
 - [实时通信的「聊天室」源码，Ctrl+c/v就可以用！！！](https://blog.51cto.com/u_15076218/2607210)
 - [使用 Workerman 做一个聊天室](https://learnku.com/articles/30160)
+# return message sample
+- data.type 狀態 : onConnect/onMessage/onClose
+```json
+{
+    "status" : 200,
+    "message" : "success !",
+    "data" : {
+        "type" : "onConnect"
+        //.......
+    }
+}
+```
 # Demo
 ```js
 //在chrome瀏覽器開發模式輸入底下

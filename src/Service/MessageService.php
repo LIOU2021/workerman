@@ -7,7 +7,21 @@ use Workerman\Worker;
 
 class MessageService
 {
-    public static function send(Worker $worker, TcpConnection $connection, string $msg)
+    public static function onConnect(Worker $worker, mixed $connectionId)
+    {
+        $res['type'] = 'onConnect';
+        $res['connection_id'] = $connectionId;
+        self::toAll($worker, $res);
+    }
+
+    public static function onClose(Worker $worker, mixed $connectionId)
+    {
+        $res['type'] = 'onClose';
+        $res['connection_id'] = $connectionId;
+        self::toAll($worker, $res);
+    }
+
+    public static function onMessage(Worker $worker, TcpConnection $connection, string $msg)
     {
         $json = json_decode($msg, true);
         if ($json) {
@@ -53,7 +67,7 @@ class MessageService
     /**
      * client端傳過來的訊息有to這個key
      */
-    private static function useTo(Worker $worker,TcpConnection $connection, $msg)
+    private static function useTo(Worker $worker, TcpConnection $connection, $msg)
     {
         $json = json_decode($msg, true);
         if (isset($json['to'])) {
@@ -69,7 +83,7 @@ class MessageService
                     if (isset($json['to_user'])) {
                         $connectId = explode("_", $json['to_user'])[1];
                         $reply = "用户id[{$connection->id}] 私下 说: {$json['msg']}";
-                        self::toUser($worker,$connection,$connectId,$reply);
+                        self::toUser($worker, $connection, $connectId, $reply);
                     } else {
                         $res = json_encode(helpReturn(403, $json));
                         $connection->send($res);
@@ -89,7 +103,7 @@ class MessageService
     /**
      * push all people message
      */
-    public static function toAll(Worker $worker, string $msg)
+    private static function toAll(Worker $worker, mixed $msg)
     {
         foreach ($worker->connections as $conn) {
             //给用户发送信息
@@ -101,15 +115,19 @@ class MessageService
     /**
      * push to user
      */
-    public static function toUser(Worker $worker,TcpConnection $connection, $connectId, mixed $reply)
+    private static function toUser(Worker $worker, TcpConnection $connection, $connectId, mixed $reply)
     {
-        $res = json_encode(helpReturn(200, $reply));
+        $res['type'] = 'onMessage';
+        $res['from'] = $connection->id;
+        $res['to'] = $connectId;
+        $res['msg'] = $reply;
+        $rep = json_encode(helpReturn(200, $res));
         if (isset($worker->connections[$connectId])) {
-            $worker->connections[$connectId]->send($res);
+            $worker->connections[$connectId]->send($rep);
             $connection->send(json_encode(helpReturn()));
         } else {
-            $res = json_encode(helpReturn(405, $connectId));
-            $connection->send($res);
+            $rep = json_encode(helpReturn(405, $res));
+            $connection->send($rep);
         }
     }
 }
