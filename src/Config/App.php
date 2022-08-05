@@ -22,6 +22,7 @@ class App
         406 => 'uid undefined !',
         407 => 'type is not bind !',
         408 => 'uid already exists !',
+        409 => 'uid already bind !',
     ];
 
     /**
