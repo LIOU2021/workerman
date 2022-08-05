@@ -53,7 +53,7 @@ class MessageService
     /**
      * client端傳過來的訊息有to這個key
      */
-    private static function useTo(Worker $worker, $connection, $msg)
+    private static function useTo(Worker $worker,TcpConnection $connection, $msg)
     {
         $json = json_decode($msg, true);
         if (isset($json['to'])) {
@@ -62,29 +62,14 @@ class MessageService
             switch ($json['to']) {
                 case 'all':
 
-                    //循环用户id，并发送信息
-                    foreach ($worker->connections as $conn) {
-                        //给用户发送信息
-                        $reply = "用户id[{$connection->id}] 廣播 说: {$json['msg']}";
-                        $res = json_encode(helpReturn(200, $reply));
-                        $conn->send($res);
-                    }
-
-                    // $connection->send("to type all : " . $json['msg']);
+                    $replyMsg = "用户id[{$connection->id}] 廣播 说: {$json['msg']}";
+                    self::toAll($worker, $replyMsg);
                     break;
                 case 'user':
                     if (isset($json['to_user'])) {
-                        $conectId = explode("_", $json['to_user'])[1];
+                        $connectId = explode("_", $json['to_user'])[1];
                         $reply = "用户id[{$connection->id}] 私下 说: {$json['msg']}";
-                        $res = json_encode(helpReturn(200, $reply));
-                        if(isset($worker->connections[$conectId])){
-                            $worker->connections[$conectId]->send($res);
-                            $connection->send(json_encode(helpReturn()));
-                        }else{
-                            $res = json_encode(helpReturn(405, $conectId));
-                            $connection->send($res);
-                        }
-                        
+                        self::toUser($worker,$connection,$connectId,$reply);
                     } else {
                         $res = json_encode(helpReturn(403, $json));
                         $connection->send($res);
@@ -97,6 +82,33 @@ class MessageService
             }
         } else {
             $res = json_encode(helpReturn(402, $msg));
+            $connection->send($res);
+        }
+    }
+
+    /**
+     * push all people message
+     */
+    public static function toAll(Worker $worker, string $msg)
+    {
+        foreach ($worker->connections as $conn) {
+            //给用户发送信息
+            $res = json_encode(helpReturn(200, $msg));
+            $conn->send($res);
+        }
+    }
+
+    /**
+     * push to user
+     */
+    public static function toUser(Worker $worker,TcpConnection $connection, $connectId, mixed $reply)
+    {
+        $res = json_encode(helpReturn(200, $reply));
+        if (isset($worker->connections[$connectId])) {
+            $worker->connections[$connectId]->send($res);
+            $connection->send(json_encode(helpReturn()));
+        } else {
+            $res = json_encode(helpReturn(405, $connectId));
             $connection->send($res);
         }
     }

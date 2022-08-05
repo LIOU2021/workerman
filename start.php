@@ -112,10 +112,12 @@ $worker->onMessage = function (TcpConnection $connection, $data) use ($worker) {
     echo "-------------------\n";
 };
 
-$worker->onClose = function (TcpConnection $connection) {
+$worker->onClose = function (TcpConnection $connection) use ($worker) {
     echo "--------onClose--------\n";
 
-    echo "connect_id {$connection->id} logout ! \n";
+    $msg = "connect_id {$connection->id} logout !";
+    echo $msg . "\n";
+    MessageService::toAll($worker, $msg);
     echo "connection closed\n";
     echo "-------------------\n";
 };
