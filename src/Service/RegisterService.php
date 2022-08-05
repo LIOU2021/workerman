@@ -24,7 +24,7 @@ class RegisterService
     public static function bindUid(string $msg, TcpConnection $connection)
     {
         $json = json_decode($msg, true);
-        if (isset($json['type']) && isset($json['type']) == 'bind') {
+        if (isset($json['type']) && $json['type'] == 'bind') {
             if (isset($json['uid'])) {
                 if (!self::checkUid($connection)) {
                     $uid = $json['uid'];

@@ -96,15 +96,24 @@ $worker->onMessage = function (TcpConnection $connection, $data) use ($worker) {
     $reply = 'hello connect ID : ' . $connection->id . "\nhello content : " . $data;
     echo $reply . "\n";
 
-    $connection->send($reply);
+    // $connection->send($reply);
     
-    if(!RegisterService::checkUid($connection)){
-        RegisterService::bindUid($data,$connection);
+    $json = json_decode($data,true);
+    
+    if(isset($json['type'])&&$json['type']=='bind'){
+        RegisterService::bindUid($data,$connection);    
     }else{
-        echo "uid : {$connection->uid}\n";
-        //建立一個全局變數陣列，裡面放uid跟connectＩＤ的對應
         MessageService::onMessage($worker, $connection, $data);
     }
+
+    //初次連線強迫得註冊uid的架構
+    // if(!RegisterService::checkUid($connection)){
+    //     RegisterService::bindUid($data,$connection);
+    // }else{
+    //     echo "uid : {$connection->uid}\n";
+    //     //建立一個全局變數陣列，裡面放uid跟connectＩＤ的對應
+    //     MessageService::onMessage($worker, $connection, $data);
+    // }
 
     // 已经处理请求数
     static $request_count = 0;

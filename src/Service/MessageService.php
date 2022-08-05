@@ -121,10 +121,16 @@ class MessageService
         $res['from'] = $connection->id;
         $res['to'] = $connectId;
         $res['msg'] = $reply;
-        $rep = json_encode(helpReturn(200, $res));
+
+        
         if (isset($worker->connections[$connectId])) {
+            $res['sender'] = false;
+            $rep = json_encode(helpReturn(200, $res));
             $worker->connections[$connectId]->send($rep);
-            $connection->send(json_encode(helpReturn()));
+            // $connection->send(json_encode(helpReturn()));
+            $res['sender'] = true;
+            $rep = json_encode(helpReturn(200, $res));
+            $connection->send($rep);
         } else {
             $rep = json_encode(helpReturn(405, $res));
             $connection->send($rep);
