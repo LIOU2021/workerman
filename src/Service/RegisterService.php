@@ -39,14 +39,14 @@ class RegisterService
                 if (!self::checkUid($connection)) {//uid尚無設置
                     $returnUid = self::addUid($uid, $connection);
                     if ($returnUid) {
-                        $rep['type'] = 'bind';
+                        $rep['type'] = 'onBind';
                         $rep['uid'] = $uid;
                         // $connection->send(json_encode(helpReturn(200, $rep)));
                         MessageService::bindUid($worker,$rep);
                         return true;
                     } else {
                         echo "bindUid : connection_id {$connection->id}, uid already exists \n";
-                        $rep['type'] = 'bind';
+                        $rep['type'] = 'onBind';
                         $rep['uid'] = $uid;
                         $result = json_encode(helpReturn(408, $rep));
                         $connection->send($result);
@@ -55,7 +55,7 @@ class RegisterService
                     }
                 } else {
                     echo "bindUid : connection_id {$connection->id}, already bind ! \n";
-                    $rep['type'] = 'bind';
+                    $rep['type'] = 'onBind';
                     $rep['uid'] = $uid;
                     $result = json_encode(helpReturn(409, $rep));
                     $connection->send($result);

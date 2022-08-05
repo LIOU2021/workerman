@@ -36,7 +36,7 @@ class MessageService
         }
     }
 
-    public static function bindUid(Worker $worker,mixed $msg)
+    public static function bindUid(Worker $worker, mixed $msg)
     {
         self::toAll($worker, $msg);
     }
@@ -86,8 +86,11 @@ class MessageService
 
             switch ($json['to']) {
                 case 'all':
-
-                    $replyMsg = "用户id[{$connection->id}] 廣播 说: {$json['msg']}";
+                    $replyMsg['type'] = 'onGroup';
+                    $replyMsg['msg'] = $json['msg'];
+                    $replyMsg['from_connectionId'] = $connection->id;
+                    $replyMsg['from_uid'] = $connection->uid;
+                    // $replyMsg = "用户id[{$connection->id}] 廣播 说: {$json['msg']}";
                     self::toAll($worker, $replyMsg);
                     break;
                 case 'user':

@@ -29,7 +29,7 @@
             if (data.status == 200) {
                 let onlineHtml = '';
                 switch (data.data.type) {
-                    case 'bind':
+                    case 'onBind':
                         $myUid = data.data.uid;
 
                         onlineHtml = `
@@ -67,7 +67,7 @@
             } else {
                 alert('fail : ' + msg);
                 //uid命名錯誤
-                if(data.status == 408){
+                if (data.status == 408) {
                     bindUid();
                 }
             }
@@ -96,6 +96,7 @@
             };
             $ws.send(JSON.stringify(msg));
         }
+
         function connect() {
             $ws = new WebSocket("ws://localhost:2000");
             $ws.onopen = function (e) {
@@ -121,8 +122,18 @@
         $(document).ready(function () {
 
             //進行socket連線
-            // connect();
+            connect();
 
+            $(".send_btn").on('click', function () {
+                let message = $(".type_msg").val();
+                
+                let msg = {
+                    type: 'message',
+                    to: 'all',
+                    msg: message,
+                };
+                $ws.send(JSON.stringify(msg));
+            });
             $('#action_menu_btn').click(function () {
                 $('.action_menu').toggle();
             });
@@ -253,7 +264,7 @@
                             </div>
                         </div>
 
-                        
+
                         <!-- <div class="d-flex justify-content-center ">
                             <div class="msg_online_cotainer">
                                 小明上線了 - 8:40 AM, Today
