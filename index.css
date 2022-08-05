@@ -205,9 +205,25 @@ html {
     position: relative;
 }
 
-.msg_time {
+.msg_name {
     position: absolute;
     left: 0;
+    bottom: +41px;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 10px;
+}
+
+.msg_name_send {
+    position: absolute;
+    right: 0;
+    bottom: +41px;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 10px;
+}
+
+.msg_time {
+    position: absolute;
+    right: 0;
     bottom: -15px;
     color: rgba(255, 255, 255, 0.5);
     font-size: 10px;
