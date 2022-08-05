@@ -2,10 +2,9 @@
 - 監聽127.0.0.1:2000
 - 不同worker(proccess/進程)不能溝通
 - connect id 編制規則為: workerId_connectId
-- 第一次發訊息請先發送註冊uid的請求
 
 # data from client
-- type : message/info/bind。message表示當通訊用。info表示獲取worker相關資訊。bind表示綁定uid
+- type : message/info/bind。message表示當通訊用。info表示獲取worker相關資訊。bind表示綁定uid。
 - to : user/all。user表示一對一，all表示一對全部。
 - msg : 信息內容
 - to_user : 當to這個key為user時，就會判讀to_user來決定要傳給哪個收訊息的人

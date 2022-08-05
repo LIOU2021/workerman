@@ -1,5 +1,6 @@
 <?php
 
+use Workerman\Config\App;
 use Workerman\Worker;
 use Workerman\Connection\TcpConnection;
 use Workerman\Events\EventInterface;
@@ -10,18 +11,18 @@ use Workerman\Timer;
 require_once __DIR__ . '/vendor/autoload.php';
 
 // 注意：这里与上个例子不同，使用的是websocket协议
-$worker = new Worker("websocket://0.0.0.0:2000");
+$worker = new Worker("websocket://0.0.0.0:".env('port',2000));
 
 // 设置实例的名称
 $worker->name = 'MyWebsocketWorker';
 
 // 每个进程最多执行1000个请求
-define('MAX_REQUEST', 1000);
+define('MAX_REQUEST', env("MAX_REQUEST",1000));
 //首次連線是否得註冊uid
-define('MUST_UID', false);
+define('MUST_UID', env("MUST_UID",false));
 
 // 启动1个进程对外提供服务。由於是要使用在通訊用途，所以設定一個進程，避免進程間無法溝通問題。
-$worker->count = 1;
+$worker->count = env("WORKER_COUNT",1);
 
 $worker->onWorkerStart = function ($worker) {
     echo "--------onWorkerStart--------\n";

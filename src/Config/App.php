@@ -23,6 +23,18 @@ class App
         407 => 'type is not bind !',
     ];
 
+    /**
+     * app config
+     * 
+     * @var array
+     */
+    static $app = [
+        "PORT" => 2000,
+        "WORKER_COUNT" => 1,
+        "MAX_REQUEST" => 1000,
+        "MUST_UID" => false,
+    ];
+
     public static function generatorErrorCode(int $code)
     {
         $all = self::$error;
@@ -30,6 +42,16 @@ class App
             return $all[$code];
         } else {
             return null;
+        }
+    }
+
+    public static function generatorAppConfig(string $key, mixed $default = null)
+    {
+        $all = self::$app;
+        if (isset($all[$key])) {
+            return $all[$key];
+        } else {
+            return $default;
         }
     }
 }

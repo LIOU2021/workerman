@@ -12,3 +12,10 @@ if (!function_exists('helpReturn')) {
         return $res;
     }
 }
+
+if (!function_exists('env')) {
+    function env(string $key, $default = null)
+    {
+        return App::generatorAppConfig($key, $default);
+    }
+}
