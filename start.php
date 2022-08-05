@@ -17,6 +17,8 @@ $worker->name = 'MyWebsocketWorker';
 
 // 每个进程最多执行1000个请求
 define('MAX_REQUEST', 1000);
+//首次連線是否得註冊uid
+define('MUST_UID', false);
 
 // 启动1个进程对外提供服务。由於是要使用在通訊用途，所以設定一個進程，避免進程間無法溝通問題。
 $worker->count = 1;
@@ -40,9 +42,9 @@ $worker->onWorkerStart = function ($worker) {
         echo "--------onConnect--------\n";
         $connection->uid = 0;
         $connection->id = $worker->id . "_" . $connection->id;
-        $msg = "online ! connection_id : " . $connection->id ;
+        $msg = "online ! connection_id : " . $connection->id;
         echo $msg . "\n";
-        MessageService::onConnect($worker,$connection->id);
+        MessageService::onConnect($worker, $connection->id);
         echo "-------------------\n";
     };
 
@@ -97,23 +99,27 @@ $worker->onMessage = function (TcpConnection $connection, $data) use ($worker) {
     echo $reply . "\n";
 
     // $connection->send($reply);
-    
-    $json = json_decode($data,true);
-    
-    if(isset($json['type'])&&$json['type']=='bind'){
-        RegisterService::bindUid($data,$connection);    
-    }else{
-        MessageService::onMessage($worker, $connection, $data);
+
+    $json = json_decode($data, true);
+
+    if (MUST_UID) {
+        //初次連線強迫得註冊uid的架構
+        if (!RegisterService::checkUid($connection)) {
+            RegisterService::bindUid($data, $connection);
+        } else {
+            echo "uid : {$connection->uid}\n";
+            MessageService::onMessage($worker, $connection, $data);
+        }
+    } else {
+        if (isset($json['type']) && $json['type'] == 'bind') {
+            RegisterService::bindUid($data, $connection);
+        } else {
+            MessageService::onMessage($worker, $connection, $data);
+        }
     }
 
-    //初次連線強迫得註冊uid的架構
-    // if(!RegisterService::checkUid($connection)){
-    //     RegisterService::bindUid($data,$connection);
-    // }else{
-    //     echo "uid : {$connection->uid}\n";
-    //     //建立一個全局變數陣列，裡面放uid跟connectＩＤ的對應
-    //     MessageService::onMessage($worker, $connection, $data);
-    // }
+
+
 
     // 已经处理请求数
     static $request_count = 0;
@@ -122,7 +128,7 @@ $worker->onMessage = function (TcpConnection $connection, $data) use ($worker) {
     // 如果请求数达到1000
     if (++$request_count >= MAX_REQUEST) {
         echo 'auto reload workerman' . "\n";
-    /*
+        /*
     * 退出当前进程，主进程会立刻重新启动一个全新进程补充上来
     * 从而完成进程重启
     */
@@ -137,7 +143,7 @@ $worker->onClose = function (TcpConnection $connection) use ($worker) {
 
     $msg = "connect_id {$connection->id} logout !";
     echo $msg . "\n";
-    MessageService::onClose($worker,$connection->id);
+    MessageService::onClose($worker, $connection->id);
     echo "connection closed\n";
     echo "-------------------\n";
 };
