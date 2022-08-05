@@ -4,6 +4,7 @@ use Workerman\Worker;
 use Workerman\Connection\TcpConnection;
 use Workerman\Events\EventInterface;
 use Workerman\Service\MessageService;
+use Workerman\Service\RegisterService;
 use Workerman\Timer;
 
 require_once __DIR__ . '/vendor/autoload.php';
@@ -37,6 +38,7 @@ $worker->onWorkerStart = function ($worker) {
     //賦予每個coonnectID都為獨立的ID，所以加上進程id當作前綴．結果就是這裡的connect是每個連線user的獨立id．
     $worker->onConnect = function (TcpConnection $connection) use ($worker) {
         echo "--------onConnect--------\n";
+        $connection->uid = 0;
         $connection->id = $worker->id . "_" . $connection->id;
         $msg = "online ! connection_id : " . $connection->id ;
         echo $msg . "\n";
@@ -95,7 +97,14 @@ $worker->onMessage = function (TcpConnection $connection, $data) use ($worker) {
     echo $reply . "\n";
 
     $connection->send($reply);
-    MessageService::onMessage($worker, $connection, $data);
+    
+    if(!RegisterService::checkUid($connection)){
+        RegisterService::bindUid($data,$connection);
+    }else{
+        echo "uid : {$connection->uid}\n";
+        //建立一個全局變數陣列，裡面放uid跟connectＩＤ的對應
+        MessageService::onMessage($worker, $connection, $data);
+    }
 
     // 已经处理请求数
     static $request_count = 0;

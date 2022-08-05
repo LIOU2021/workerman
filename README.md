@@ -2,9 +2,10 @@
 - 監聽127.0.0.1:2000
 - 不同worker(proccess/進程)不能溝通
 - connect id 編制規則為: workerId_connectId
+- 第一次發訊息請先發送註冊uid的請求
 
 # data from client
-- type : message/info。message表示當通訊用。info表示獲取worker相關資訊。
+- type : message/info/bind。message表示當通訊用。info表示獲取worker相關資訊。bind表示綁定uid
 - to : user/all。user表示一對一，all表示一對全部。
 - msg : 信息內容
 - to_user : 當to這個key為user時，就會判讀to_user來決定要傳給哪個收訊息的人
@@ -16,7 +17,7 @@
 - [实时通信的「聊天室」源码，Ctrl+c/v就可以用！！！](https://blog.51cto.com/u_15076218/2607210)
 - [使用 Workerman 做一个聊天室](https://learnku.com/articles/30160)
 # return message sample
-- data.type 狀態 : onConnect/onMessage/onClose
+- data.type 狀態 : onConnect/onMessage/onClose/bind
 ```json
 {
     "status" : 200,
@@ -46,6 +47,11 @@ ws.onmessage = function(e) {
     }
 };
 
+msg={
+    type : 'bind',
+    uid : 'abc123'
+};
+ws.send(JSON.stringify(msg));
 
 msg={
     type:'message',

@@ -19,6 +19,8 @@ class App
         403 => 'user connect id not find',
         404 => 'to type not find !',
         405 => 'connect id not find !',
+        406 => 'uid undefined !',
+        407 => 'type is not bind !',
     ];
 
     public static function generatorErrorCode(int $code)
