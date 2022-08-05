@@ -23,6 +23,7 @@
     <script>
         $ws = '';
         $myUid = '';
+        $inputUid = '';
 
         function proccessWsMessage(msg) {
             let data = JSON.parse(msg);
@@ -30,7 +31,12 @@
                 let onlineHtml = '';
                 switch (data.data.type) {
                     case 'onBind':
-                        $myUid = data.data.uid;
+                        if ($inputUid == data.data.uid) {
+                            $myUid = $inputUid;
+                        }
+
+                        // $myUid = data.data.uid;
+
 
                         onlineHtml = `
                         <div class="d-flex justify-content-center ">
@@ -44,6 +50,34 @@
                         break;
                     case 'onConnect':
 
+                        break;
+                    case 'onGroup':
+                        let from_uid = data.data.from_uid;
+                        if (from_uid == $myUid) {
+                            onlineHtml = `
+                        <div class="d-flex justify-content-end mb-4">
+                            <div class="msg_cotainer_send">
+                                <span class="msg_name_send">
+                                    ${from_uid}
+                                </span>
+                                ${data.data.msg}
+                                <span class="msg_time_send">${data.datetime}</span>
+                            </div>
+                        </div>`;
+                        } else {
+                            onlineHtml = `
+                            <div class="d-flex justify-content-start mb-4">
+                            <div class="msg_cotainer">
+                                <span class="msg_name">
+                                    ${from_uid}
+                                </span>
+                                ${data.data.msg}
+                                <span class="msg_time">${data.datetime}</span>
+                            </div>
+                        </div>
+                        `;
+                        }
+                        $(".card-body.msg_card_body").append(onlineHtml);
                         break;
                     // case 'infor':
                     //     break;
@@ -66,8 +100,9 @@
                 }
             } else {
                 alert('fail : ' + msg);
-                //uid命名錯誤
+                //uid命名重疊
                 if (data.status == 408) {
+                    $inputUid = '';
                     bindUid();
                 }
             }
@@ -79,6 +114,7 @@
             if (input == null || input == "") {
                 text = "";
             } else {
+                $inputUid = input;
                 text = input;
             }
             return text;
@@ -126,14 +162,24 @@
 
             $(".send_btn").on('click', function () {
                 let message = $(".type_msg").val();
-                
+
                 let msg = {
                     type: 'message',
                     to: 'all',
                     msg: message,
                 };
                 $ws.send(JSON.stringify(msg));
+
+                $(".type_msg").val("");
             });
+
+            $(".form-control.type_msg").keyup(function (e) {
+                var code = e.keyCode ? e.keyCode : e.which;
+                if (code == 13) {  // Enter keycode
+                    $(".send_btn").click();
+                }
+            });
+
             $('#action_menu_btn').click(function () {
                 $('.action_menu').toggle();
             });
@@ -244,7 +290,7 @@
                     </div>
                     <div class="card-body msg_card_body">
 
-                        <div class="d-flex justify-content-start mb-4">
+                        <!-- <div class="d-flex justify-content-start mb-4">
                             <div class="msg_cotainer">
                                 <span class="msg_name">
                                     阿狗
@@ -262,7 +308,7 @@
                                 Hi Khalid i am good tnx how about you?
                                 <span class="msg_time_send">8:55 AM, Today</span>
                             </div>
-                        </div>
+                        </div> -->
 
 
                         <!-- <div class="d-flex justify-content-center ">

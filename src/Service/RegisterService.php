@@ -30,19 +30,20 @@ class RegisterService
         }
     }
 
-    public static function bindUid(string $msg, TcpConnection $connection,Worker $worker)
+    public static function bindUid(string $msg, TcpConnection $connection, Worker $worker)
     {
         $json = json_decode($msg, true);
         if (isset($json['type']) && $json['type'] == 'bind') {
             if (isset($json['uid'])) {
                 $uid = $json['uid'];
-                if (!self::checkUid($connection)) {//uid尚無設置
+                if (!self::checkUid($connection)) { //uid尚無設置
                     $returnUid = self::addUid($uid, $connection);
                     if ($returnUid) {
                         $rep['type'] = 'onBind';
                         $rep['uid'] = $uid;
+                        $rep['connection_id'] = $connection->id;
                         // $connection->send(json_encode(helpReturn(200, $rep)));
-                        MessageService::bindUid($worker,$rep);
+                        MessageService::bindUid($worker, $rep);
                         return true;
                     } else {
                         echo "bindUid : connection_id {$connection->id}, uid already exists \n";
