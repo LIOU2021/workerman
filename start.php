@@ -38,7 +38,9 @@ $worker->onWorkerStart = function ($worker) {
     $worker->onConnect = function (TcpConnection $connection) use ($worker) {
         echo "--------onConnect--------\n";
         $connection->id = $worker->id . "_" . $connection->id;
-        echo "connection_id : " . $connection->id . "\n";
+        $msg = "online ! connection_id : " . $connection->id ;
+        echo $msg . "\n";
+        MessageService::toAll($worker, $msg);
         echo "-------------------\n";
     };
 
@@ -102,7 +104,7 @@ $worker->onMessage = function (TcpConnection $connection, $data) use ($worker) {
     // 如果请求数达到1000
     if (++$request_count >= MAX_REQUEST) {
         echo 'auto reload workerman' . "\n";
-        /*
+    /*
     * 退出当前进程，主进程会立刻重新启动一个全新进程补充上来
     * 从而完成进程重启
     */
