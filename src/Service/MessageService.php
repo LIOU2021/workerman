@@ -16,8 +16,10 @@ class MessageService
 
     public static function onClose(Worker $worker, TcpConnection $connection)
     {
+        $uid = $connection->uid;
         $res['type'] = 'onClose';
-        $res['uid'] = $connection->uid;
+        $res['uid'] = $uid;
+        unset($GLOBALS['users'][$uid]);
         $res['connection_id'] = $connection->id;
 
         self::toAll($worker, $res);
