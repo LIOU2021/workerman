@@ -27,12 +27,13 @@
         function proccessWsMessage(msg) {
             let data = JSON.parse(msg);
             if (data.status == 200) {
+                let onlineHtml = '';
                 switch (data.data.type) {
                     case 'bind':
                         $myUid = data.data.uid;
                         break;
                     case 'onConnect':
-                        let onlineHtml = `
+                        onlineHtml = `
                         <div class="d-flex justify-content-center ">
                             <div class="msg_online_cotainer">
                                 ${data.data.connection_id} 上線 - ${data.datetime}
@@ -41,6 +42,20 @@
 
                         $(".msg_card_body").append(onlineHtml);
                         break;
+                    // case 'infor':
+                    //     break;
+                    case 'onClose':
+                        onlineHtml = `
+                        <div class="d-flex justify-content-center ">
+                            <div class="msg_online_cotainer">
+                                ${data.data.connection_id} 下線 - ${data.datetime}
+                            </div>
+                        </div>`;
+
+                        $(".msg_card_body").append(onlineHtml);
+                        break;
+                    // case 'onMessage':
+                    //     break;
                     default:
                         console.log('未定義此訊息格式')
                         console.log(data)

@@ -16,7 +16,7 @@
 - [实时通信的「聊天室」源码，Ctrl+c/v就可以用！！！](https://blog.51cto.com/u_15076218/2607210)
 - [使用 Workerman 做一个聊天室](https://learnku.com/articles/30160)
 # return message sample
-- data.type 狀態 : onConnect/onMessage/onClose/bind
+- data.type 狀態 : onConnect/onMessage/onClose/bind/infor
 ```json
 {
     "status" : 200,

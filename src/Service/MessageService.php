@@ -61,6 +61,7 @@ class MessageService
         $res['connectId'] = $connection->id;
         $res['allConnect'] = $worker->connections;
         $res['users'] = $GLOBALS['users'];
+        $res['type'] = 'info';
         $rep = json_encode(helpReturn(200, $res));
         $connection->send($rep);
     }
