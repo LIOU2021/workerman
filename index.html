@@ -31,16 +31,19 @@
                 switch (data.data.type) {
                     case 'bind':
                         $myUid = data.data.uid;
-                        break;
-                    case 'onConnect':
+
                         onlineHtml = `
                         <div class="d-flex justify-content-center ">
                             <div class="msg_online_cotainer">
-                                ${data.data.connection_id} 上線 - ${data.datetime}
+                                ${$myUid} 上線 - ${data.datetime}
                             </div>
                         </div>`;
 
                         $(".msg_card_body").append(onlineHtml);
+
+                        break;
+                    case 'onConnect':
+
                         break;
                     // case 'infor':
                     //     break;
@@ -65,7 +68,6 @@
                 alert('fail : ' + msg);
                 //uid命名錯誤
                 if(data.status == 408){
-                    alert(123);
                     bindUid();
                 }
             }
@@ -73,7 +75,7 @@
 
         function enterUid() {
             let text = "";
-            let input = prompt("Please enter your id:", "myId1234");
+            let input = prompt("Please enter your id:", "myUid01");
             if (input == null || input == "") {
                 text = "";
             } else {
@@ -118,6 +120,7 @@
 
         $(document).ready(function () {
 
+            //進行socket連線
             connect();
 
             $('#action_menu_btn').click(function () {

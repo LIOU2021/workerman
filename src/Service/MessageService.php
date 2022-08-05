@@ -32,6 +32,11 @@ class MessageService
         }
     }
 
+    public static function bindUid(Worker $worker,mixed $msg)
+    {
+        self::toAll($worker, $msg);
+    }
+
     private static function readType(Worker $worker, TcpConnection $connection, $msg)
     {
         $json = json_decode($msg, true);

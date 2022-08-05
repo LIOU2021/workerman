@@ -109,14 +109,14 @@ $worker->onMessage = function (TcpConnection $connection, $data) use ($worker) {
     if (MUST_UID) {
         //初次連線強迫得註冊uid的架構
         if (!RegisterService::checkUid($connection)) {
-            RegisterService::bindUid($data, $connection);
+            RegisterService::bindUid($data, $connection,$worker);
         } else {
             echo "uid : {$connection->uid}\n";
             MessageService::onMessage($worker, $connection, $data);
         }
     } else {
         if (isset($json['type']) && $json['type'] == 'bind') {
-            RegisterService::bindUid($data, $connection);
+            RegisterService::bindUid($data, $connection,$worker);
         } else {
             MessageService::onMessage($worker, $connection, $data);
         }

@@ -3,6 +3,7 @@
 namespace Workerman\Service;
 
 use Workerman\Connection\TcpConnection;
+use Workerman\Worker;
 
 class RegisterService
 {
@@ -29,7 +30,7 @@ class RegisterService
         }
     }
 
-    public static function bindUid(string $msg, TcpConnection $connection)
+    public static function bindUid(string $msg, TcpConnection $connection,Worker $worker)
     {
         $json = json_decode($msg, true);
         if (isset($json['type']) && $json['type'] == 'bind') {
@@ -40,7 +41,8 @@ class RegisterService
                     if ($returnUid) {
                         $rep['type'] = 'bind';
                         $rep['uid'] = $uid;
-                        $connection->send(json_encode(helpReturn(200, $rep)));
+                        // $connection->send(json_encode(helpReturn(200, $rep)));
+                        MessageService::bindUid($worker,$rep);
                         return true;
                     } else {
                         echo "bindUid : connection_id {$connection->id}, uid already exists \n";
