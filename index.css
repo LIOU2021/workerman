@@ -184,6 +184,17 @@ html {
     position: relative;
 }
 
+.msg_online_cotainer {
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-left: 10px;
+    border-radius: 25px;
+    /* background-color: #82ccdd; */
+    color: rgba(255, 255, 255, 0.5);
+    padding: 10px;
+    position: relative;
+}
+
 .msg_cotainer_send {
     margin-top: auto;
     margin-bottom: auto;

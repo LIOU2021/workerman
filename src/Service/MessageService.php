@@ -60,6 +60,7 @@ class MessageService
     {
         $res['connectId'] = $connection->id;
         $res['allConnect'] = $worker->connections;
+        $res['users'] = $GLOBALS['users'];
         $rep = json_encode(helpReturn(200, $res));
         $connection->send($rep);
     }
@@ -122,7 +123,7 @@ class MessageService
         $res['to'] = $connectId;
         $res['msg'] = $reply;
 
-        
+
         if (isset($worker->connections[$connectId])) {
             $res['sender'] = false;
             $rep = json_encode(helpReturn(200, $res));

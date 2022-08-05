@@ -21,6 +21,7 @@ class App
         405 => 'connect id not find !',
         406 => 'uid undefined !',
         407 => 'type is not bind !',
+        408 => 'uid already exists !',
     ];
 
     /**
@@ -33,6 +34,7 @@ class App
         "WORKER_COUNT" => 1,
         "MAX_REQUEST" => 1000,
         "MUST_UID" => false,
+        "TIME_ZONE" => "Asia/Taipei",
     ];
 
     public static function generatorErrorCode(int $code)

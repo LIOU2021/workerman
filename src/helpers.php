@@ -9,6 +9,7 @@ if (!function_exists('helpReturn')) {
         $res['status'] = $status;
         $res['msg'] = $msg;
         $res['data'] = $data;
+        $res['datetime']=date("Y-m-d H:i:s");
         return $res;
     }
 }

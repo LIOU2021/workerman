@@ -10,6 +10,12 @@ class RegisterService
     {
         echo "bindUid : success ! uid {$uid} \n";
         $connection->uid = $uid;
+        if (isset($GLOBALS['users'][$uid])) {
+            return false;
+        } else {
+            $GLOBALS['users'][$uid] = $connection->id;
+            return true;
+        }
     }
 
     public static function checkUid(TcpConnection $connection)
@@ -28,9 +34,19 @@ class RegisterService
             if (isset($json['uid'])) {
                 if (!self::checkUid($connection)) {
                     $uid = $json['uid'];
-                    self::addUid($uid, $connection);
-                    $rep['type'] = 'bind';
-                    $connection->send(json_encode(helpReturn(200, $rep)));
+                    $returnUid = self::addUid($uid, $connection);
+                    if($returnUid){
+                        $rep['type'] = 'bind';
+                        $rep['uid'] = $uid;
+                        $connection->send(json_encode(helpReturn(200, $rep)));
+                        return true;
+                    }else{
+                        $rep['type'] = 'bind';
+                        $rep['uid'] = $uid;
+                        $connection->send(json_encode(helpReturn(408, $rep)));
+                        return false;
+                    }
+                    
                 } else {
                     echo "bindUid : connection_id {$connection->id}, uid already exists \n";
                 }
