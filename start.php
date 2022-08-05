@@ -147,7 +147,7 @@ $worker->onClose = function (TcpConnection $connection) use ($worker) {
 
     $msg = "connect_id {$connection->id} logout !";
     echo $msg . "\n";
-    MessageService::onClose($worker, $connection->id);
+    MessageService::onClose($worker, $connection);
     echo "connection closed\n";
     echo "-------------------\n";
 };

@@ -14,10 +14,12 @@ class MessageService
         self::toAll($worker, $res);
     }
 
-    public static function onClose(Worker $worker, mixed $connectionId)
+    public static function onClose(Worker $worker, TcpConnection $connection)
     {
         $res['type'] = 'onClose';
-        $res['connection_id'] = $connectionId;
+        $res['uid'] = $connection->uid;
+        $res['connection_id'] = $connection->id;
+
         self::toAll($worker, $res);
     }
 
