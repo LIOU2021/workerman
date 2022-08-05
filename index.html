@@ -63,6 +63,11 @@
                 }
             } else {
                 alert('fail : ' + msg);
+                //uid命名錯誤
+                if(data.status == 408){
+                    alert(123);
+                    bindUid();
+                }
             }
         }
 
@@ -77,21 +82,25 @@
             return text;
         }
 
+        function bindUid() {
+            let uid = '';
+            while (uid == '') {
+                uid = enterUid();
+            }
+
+            let msg = {
+                type: 'bind',
+                uid: uid
+            };
+            $ws.send(JSON.stringify(msg));
+        }
         function connect() {
             $ws = new WebSocket("ws://localhost:2000");
             $ws.onopen = function (e) {
                 console.log("连接成功");
 
-                let uid = '';
-                while (uid == '') {
-                    uid = enterUid();
-                }
-
-                let msg = {
-                    type: 'bind',
-                    uid: uid
-                };
-                $ws.send(JSON.stringify(msg));
+                //bind Uid
+                bindUid();
 
             };
             $ws.onmessage = function (e) {

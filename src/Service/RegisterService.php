@@ -8,18 +8,20 @@ class RegisterService
 {
     private static function addUid(string $uid, TcpConnection $connection)
     {
-        echo "bindUid : success ! uid {$uid} \n";
+        
         $connection->uid = $uid;
         if (isset($GLOBALS['users'][$uid])) {
             return false;
         } else {
             $GLOBALS['users'][$uid] = $connection->id;
+            echo "bindUid : success ! uid {$uid} \n";
             return true;
         }
     }
 
     public static function checkUid(TcpConnection $connection)
     {
+        echo "checkUid : {$connection->uid} \n" ;
         if ($connection->uid) {
             return true;
         } else {
@@ -32,8 +34,8 @@ class RegisterService
         $json = json_decode($msg, true);
         if (isset($json['type']) && $json['type'] == 'bind') {
             if (isset($json['uid'])) {
+                $uid = $json['uid'];
                 if (!self::checkUid($connection)) {
-                    $uid = $json['uid'];
                     $returnUid = self::addUid($uid, $connection);
                     if($returnUid){
                         $rep['type'] = 'bind';
@@ -41,14 +43,23 @@ class RegisterService
                         $connection->send(json_encode(helpReturn(200, $rep)));
                         return true;
                     }else{
+                        echo "bindUid : connection_id {$connection->id}, uid already exists \n";
                         $rep['type'] = 'bind';
                         $rep['uid'] = $uid;
-                        $connection->send(json_encode(helpReturn(408, $rep)));
+                        $result = json_encode(helpReturn(408, $rep));
+                        $connection->send($result);
+                        echo $result."\n";
                         return false;
                     }
                     
                 } else {
                     echo "bindUid : connection_id {$connection->id}, uid already exists \n";
+                        $rep['type'] = 'bind';
+                        $rep['uid'] = $uid;
+                        $result = json_encode(helpReturn(408, $rep));
+                        $connection->send($result);
+                        echo $result."\n";
+                        return false;
                 }
             } else {
                 $connection->send(json_encode(helpReturn(406)));
