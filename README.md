@@ -8,6 +8,7 @@
 - to : user/all。user表示一對一，all表示一對全部。
 - msg : 信息內容
 - to_user : 當to這個key為user時，就會判讀to_user來決定要傳給哪個收訊息的人
+- uid : user獨立的ID
 
 
 # REF
