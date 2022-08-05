@@ -21,9 +21,24 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
     <script>
-        $ws = '';
-        $myUid = '';
-        $inputUid = '';
+        var $ws = '';
+        var $myUid = '';
+        var $inputUid = '';
+        var $allPeople = {};
+
+        function addAllPeople(uid, connectionId) {
+            if (!$allPeople.hasOwnProperty(uid)) {
+                let randomColor = "#" + Math.floor(Math.random() * 16777215).toString(16);
+                $allPeople[uid] = {
+                    connectionId: connectionId,
+                    color: randomColor
+                };
+            };
+        }
+
+        function deleteAllPeople(uid) {
+            delete $allPeople[uid];
+        }
 
         function proccessWsMessage(msg) {
             let data = JSON.parse(msg);
@@ -35,8 +50,7 @@
                             $myUid = $inputUid;
                         }
 
-                        // $myUid = data.data.uid;
-
+                        addAllPeople(data.data.uid, data.data.connection_id);
 
                         onlineHtml = `
                         <div class="d-flex justify-content-center ">
@@ -52,7 +66,11 @@
 
                         break;
                     case 'onGroup':
+
                         let from_uid = data.data.from_uid;
+                        let from_connectionId = data.data.from_connectionId;
+                        addAllPeople(from_uid, from_connectionId);
+
                         if (from_uid == $myUid) {
                             onlineHtml = `
                         <div class="d-flex justify-content-end mb-4">
@@ -67,7 +85,7 @@
                         } else {
                             onlineHtml = `
                             <div class="d-flex justify-content-start mb-4">
-                            <div class="msg_cotainer">
+                            <div class="msg_cotainer" style="background-color:${$allPeople[from_uid].color}">
                                 <span class="msg_name">
                                     ${from_uid}
                                 </span>
@@ -82,10 +100,14 @@
                     // case 'infor':
                     //     break;
                     case 'onClose':
+                        let uid = data.data.uid;
+                        
+                        deleteAllPeople(uid);
+
                         onlineHtml = `
                         <div class="d-flex justify-content-center ">
                             <div class="msg_online_cotainer">
-                                ${data.data.uid} 下線 - ${data.datetime}
+                                ${uid} 下線 - ${data.datetime}
                             </div>
                         </div>`;
 

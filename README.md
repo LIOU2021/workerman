@@ -1,3 +1,7 @@
+# sample
+## 大廳
+![大廳](./sampleImage/sample-group.JPG)
+
 # start
 - 監聽127.0.0.1:2000
 - 不同worker(proccess/進程)不能溝通
