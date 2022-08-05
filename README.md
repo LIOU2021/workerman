@@ -21,16 +21,22 @@
 
 ws = new WebSocket("ws://localhost:2000");
 ws.onopen = function() {
-    alert("连接成功");
+    console.log("连接成功");
     ws.send('tom');
-    alert("给服务端发送一个字符串：tom");
+    console.log("给服务端发送一个字符串：tom");
 };
 ws.onmessage = function(e) {
-    alert("收到服务端的消息：" + e.data);
+    console.log("收到服务端的消息：");
+    try{
+        console.log(JSON.parse(e.data));
+    }catch(exception){
+        console.log(e.data);
+    }
 };
 
 
 msg={
+    type:'message',
     to:'user',
     msg:'安安你好',
     to_user:'0_2'

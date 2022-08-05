@@ -36,8 +36,10 @@ $worker->onWorkerStart = function ($worker) {
     //https://www.workerman.net/doc/workerman/tcp-connection/id.html#id
     //賦予每個coonnectID都為獨立的ID，所以加上進程id當作前綴．結果就是這裡的connect是每個連線user的獨立id．
     $worker->onConnect = function (TcpConnection $connection) use ($worker) {
-        //
+        echo "--------onConnect--------\n";
         $connection->id = $worker->id . "_" . $connection->id;
+        echo "connection_id : " . $connection->id . "\n";
+        echo "-------------------\n";
     };
 
     //只在id編號為０的進程加上定時器
