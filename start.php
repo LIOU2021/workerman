@@ -20,6 +20,8 @@ $worker->name = 'MyWebsocketWorker';
 define('MAX_REQUEST', env("MAX_REQUEST",1000));
 //首次連線是否得註冊uid
 define('MUST_UID', env("MUST_UID",false));
+//存放uid && connectionId
+define('USERS',[]);
 
 // 启动1个进程对外提供服务。由於是要使用在通訊用途，所以設定一個進程，避免進程間無法溝通問題。
 $worker->count = env("WORKER_COUNT",1);
