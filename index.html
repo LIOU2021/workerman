@@ -23,6 +23,7 @@
     <script>
         var $ws = '';
         var $myUid = '';
+        var $myConnectId = '';
         var $inputUid = '';
         var $allPeople = {};
 
@@ -33,7 +34,28 @@
                     connectionId: connectionId,
                     color: randomColor
                 };
+
+                addUserList(uid, connectionId);
             };
+        }
+
+        function addUserList(uid, connectionId) {
+            if ($myUid == uid) {
+                return false;
+            }
+            let listHtml = '';
+            listHtml = `
+            <li class="">
+                <div class="d-flex bd-highlight user-list" data-connect-id="${connectionId}" data-uid="${uid}">
+                    <div class="user_info">
+                        <span>${uid}</span>
+                        <p>${uid} is online</p>
+                    </div>
+                </div>
+            </li>
+            `;
+            $(".user-list-area").append(listHtml);
+            return true;
         }
 
         function deleteAllPeople(uid) {
@@ -48,6 +70,7 @@
                     case 'onBind':
                         if ($inputUid == data.data.uid) {
                             $myUid = $inputUid;
+                            $myConnectId = data.data.connection_id;
                         }
 
                         addAllPeople(data.data.uid, data.data.connection_id);
@@ -101,7 +124,7 @@
                     //     break;
                     case 'onClose':
                         let uid = data.data.uid;
-                        
+
                         deleteAllPeople(uid);
 
                         onlineHtml = `
@@ -231,8 +254,7 @@
                         </div>
                     </div>
                     <div class="card-body contacts_body">
-                        <ui class="contacts">
-
+                        <ui class="contacts user-list-area">
 
                             <li class="active">
                                 <div class="d-flex bd-highlight user-list" data-connect-id="0">
@@ -248,13 +270,14 @@
                                 </div>
                             </li>
 
+                            <!-- 
                             <li class="">
                                 <div class="d-flex bd-highlight user-list" data-connect-id="1">
-                                    <!-- <div class="img_cont">
+                                    <div class="img_cont">
                                         <img src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg"
                                             class="rounded-circle user_img">
                                         <span class="online_icon"></span>
-                                    </div> -->
+                                    </div>
                                     <div class="user_info">
                                         <span>Khalid</span>
                                         <p>Kalid is online</p>
@@ -264,17 +287,18 @@
 
                             <li>
                                 <div class="d-flex bd-highlight user-list" data-connect-id="2">
-                                    <!-- <div class="img_cont">
+                                    <div class="img_cont">
                                         <img src="https://2.bp.blogspot.com/-8ytYF7cfPkQ/WkPe1-rtrcI/AAAAAAAAGqU/FGfTDVgkcIwmOTtjLka51vineFBExJuSACLcBGAs/s320/31.jpg"
                                             class="rounded-circle user_img">
                                         <span class="online_icon offline"></span>
-                                    </div> -->
+                                    </div>
                                     <div class="user_info">
                                         <span>Taherah Big</span>
                                         <p>Taherah left 7 mins ago</p>
                                     </div>
                                 </div>
-                            </li>
+                            </li> 
+                        -->
 
 
                         </ui>
