@@ -22,7 +22,7 @@
 - [使用 Workerman 做一个聊天室](https://learnku.com/articles/30160)
 # return message sample
 - data.type 狀態 : onConnect/onMessage/onClose/onGroup/onBind/infor/
-- onConnect : 群體訊息
+- onConnect : 群體訊息/自己
 - onMessage : 一對一聊天
 - onClose : 群體訊息
 - onGroup : 群體訊息

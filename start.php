@@ -47,6 +47,13 @@ $worker->onWorkerStart = function ($worker) {
         $connection->uid = 0;
         $connection->id = $worker->id . "_" . $connection->id;
         $msg = "online ! connection_id : " . $connection->id;
+        
+        $result['type']='onConnect';
+        $result['msg']='you self';
+        $result['connection_id']=$connection->id;
+        $result['uid']=$connection->uid;
+        $connection->send(json_encode(helpReturn(200,$result)));
+        
         echo $msg . "\n";
         MessageService::onConnect($worker, $connection->id);
         echo "-------------------\n";
