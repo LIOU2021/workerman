@@ -53,7 +53,6 @@ function addAllPeople(uid, connectionId) {
         };
 
         addUserList(uid, connectionId);
-        console.log('add UserList after : ' + $chatRoomId);
         addChatRoomList(uid, connectionId);
     };
 }
@@ -104,7 +103,6 @@ function addChatRoomList(uid, connectionId) {
     $(".chatRoom-body").append(chatRoomHtml);
 
     $(`.chatRoom-${connectionId} .send_btn`).on('click', function () {
-        console.log('sender...');
         senderEvent();
     });
 
@@ -125,7 +123,6 @@ function userListEvent(_this) {
 
     let connectId = $(_this).data('connect-id');
     $chatRoomId = connectId;
-    console.log("更改chatRoomId 觸發事件 : " + $chatRoomId);
     let uid = $(_this).data('uid');
 
 
@@ -299,9 +296,6 @@ function proccessWsMessage(msg) {
 
                 roomId = to_connectionId;
 
-
-
-                console.log(`.chatRoom-${roomId}>.card-body.msg_card_body`);
                 $(`.chatRoom-${roomId}>.card-body.msg_card_body`).append(onlineHtml);
                 break;
             default:
