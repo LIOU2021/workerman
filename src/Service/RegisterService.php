@@ -14,6 +14,7 @@ class RegisterService
             return false;
         } else {
             $GLOBALS['users'][$uid] = $connection->id;
+            $GLOBALS['users2'][$connection->id] = $uid;
             $connection->uid = $uid;
             echo "bindUid : success ! uid {$uid} \n";
             return true;

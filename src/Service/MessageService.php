@@ -10,6 +10,8 @@ class MessageService
     public static function onConnect(Worker $worker, mixed $connectionId)
     {
         $res['type'] = 'onConnect';
+        $res['yourself'] = false;
+        $res['uid'] = $connectionId->uid;
         $res['connection_id'] = $connectionId;
         self::toAll($worker, $res);
     }
@@ -20,6 +22,7 @@ class MessageService
         $res['type'] = 'onClose';
         $res['uid'] = $uid;
         unset($GLOBALS['users'][$uid]);
+        unset($GLOBALS['users2'][$connection->id]);
         $res['connection_id'] = $connection->id;
 
         self::toAll($worker, $res);
@@ -70,6 +73,7 @@ class MessageService
         $res['connectId'] = $connection->id;
         $res['allConnect'] = $worker->connections;
         $res['users'] = $GLOBALS['users'];
+        $res['users2'] = $GLOBALS['users2'];
         $res['type'] = 'info';
         $rep = json_encode(helpReturn(200, $res));
         $connection->send($rep);
@@ -131,9 +135,12 @@ class MessageService
      */
     private static function toUser(Worker $worker, TcpConnection $connection, $connectId, mixed $reply)
     {
+        $toConnectId = $worker->id . "_" . $connectId;
         $res['type'] = 'onMessage';
-        $res['from'] = $connection->id;
-        $res['to'] = $worker->id."_".$connectId;
+        $res['from_connectionId'] = $connection->id;
+        $res['from_Uid'] = $connection->uid;
+        $res['to_connectionId'] = $toConnectId;
+        $res['to_Uid'] = $GLOBALS['users2'][$toConnectId];
         $res['msg'] = $reply;
 
 

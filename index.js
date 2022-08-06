@@ -7,10 +7,11 @@ var $chatRoomId = 0;
 
 function inputKeyupEvent(e) {
     var code = e.keyCode ? e.keyCode : e.which;
-        if (code == 13) {  // Enter keycode
-            $(`.chatRoom-${$chatRoomId} .send_btn`).click();
-        }
+    if (code == 13) {  // Enter keycode
+        $(`.chatRoom-${$chatRoomId} .send_btn`).click();
+    }
 }
+
 function senderEvent() {
     let message = $(".type_msg").val();
     let msgType = '';
@@ -36,6 +37,7 @@ function senderEvent() {
 
     $(".type_msg").val("");
 }
+
 function addAllPeople(uid, connectionId) {
     if (!$allPeople.hasOwnProperty(uid)) {
         let randomColor = "#" + Math.floor(Math.random() * 16777215).toString(16);
@@ -45,7 +47,7 @@ function addAllPeople(uid, connectionId) {
         };
 
         addUserList(uid, connectionId);
-        console.log('add UserList after : '+$chatRoomId);
+        console.log('add UserList after : ' + $chatRoomId);
         addChatRoomList(uid, connectionId);
     };
 }
@@ -94,7 +96,7 @@ function addChatRoomList(uid, connectionId) {
         console.log('sender...');
         senderEvent();
     });
-    
+
 
     $(`.chatRoom-${connectionId} .form-control.type_msg`).keyup(function (e) {
         inputKeyupEvent(e);
@@ -112,7 +114,7 @@ function userListEvent(_this) {
 
     let connectId = $(_this).data('connect-id');
     $chatRoomId = connectId;
-    console.log("更改chatRoomId 觸發事件 : "+$chatRoomId);
+    console.log("更改chatRoomId 觸發事件 : " + $chatRoomId);
     let uid = $(_this).data('uid');
 
 
@@ -161,6 +163,8 @@ function proccessWsMessage(msg) {
     let data = JSON.parse(msg);
     if (data.status == 200) {
         let onlineHtml = '';
+        let from_uid = '';
+        let from_connectionId = '';
         switch (data.data.type) {
             case 'onBind':
                 if ($inputUid == data.data.uid) {
@@ -185,8 +189,8 @@ function proccessWsMessage(msg) {
                 break;
             case 'onGroup':
 
-                let from_uid = data.data.from_uid;
-                let from_connectionId = data.data.from_connectionId;
+                from_uid = data.data.from_uid;
+                from_connectionId = data.data.from_connectionId;
                 addAllPeople(from_uid, from_connectionId);
 
                 if (from_uid == $myUid) {
@@ -234,6 +238,43 @@ function proccessWsMessage(msg) {
                 $(".chatRoom-0>.msg_card_body").append(onlineHtml);
                 break;
             // case 'onMessage':
+            //     let to_connectionId = '';
+            //     let isSender = data.data.sender;
+            //     if (isSender) {
+            //         from_connectionId = data.data.from_connectionId;
+            //         to_connectionId = data.data.to_connectionId;
+            //     } else {
+            //         to_connectionId = data.data.from_connectionId;
+            //         from_connectionId = data.data.to_connectionId;
+            //     }
+
+
+
+            //     if (isSender) {
+            //         onlineHtml = `
+            //     <div class="d-flex justify-content-end mb-4">
+            //         <div class="msg_cotainer_send">
+            //             <span class="msg_name_send">
+            //                 ${from_uid}
+            //             </span>
+            //             ${data.data.msg}
+            //             <span class="msg_time_send">${data.datetime}</span>
+            //         </div>
+            //     </div>`;
+            //     } else {
+            //         onlineHtml = `
+            //         <div class="d-flex justify-content-start mb-4">
+            //         <div class="msg_cotainer" style="background-color:${$allPeople[from_uid].color}">
+            //             <span class="msg_name">
+            //                 ${from_uid}
+            //             </span>
+            //             ${data.data.msg}
+            //             <span class="msg_time">${data.datetime}</span>
+            //         </div>
+            //     </div>
+            //     `;
+            //     }
+            //     $(".chatRoom-0>.card-body.msg_card_body").append(onlineHtml);
             //     break;
             default:
                 console.log('未定義此訊息格式')

@@ -21,7 +21,10 @@ define('MAX_REQUEST', env("MAX_REQUEST",1000));
 //首次連線是否得註冊uid
 define('MUST_UID', env("MUST_UID",false));
 //存放uid && connectionId
+//以ud做key
 $GLOBALS['users']=[];
+//以connectId做key
+$GLOBALS['users2']=[];
 date_default_timezone_set(env("TIME_ZONE","UTC"));
 
 // 启动1个进程对外提供服务。由於是要使用在通訊用途，所以設定一個進程，避免進程間無法溝通問題。
@@ -49,7 +52,7 @@ $worker->onWorkerStart = function ($worker) {
         $msg = "online ! connection_id : " . $connection->id;
         
         $result['type']='onConnect';
-        $result['msg']='you self';
+        $result['yourself']=true;
         $result['connection_id']=$connection->id;
         $result['uid']=$connection->uid;
         $connection->send(json_encode(helpReturn(200,$result)));
