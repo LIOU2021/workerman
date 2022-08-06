@@ -1,6 +1,8 @@
 # sample
 ## 大廳
 ![大廳](./sampleImage/sample-group.JPG)
+## 私訊
+![私訊](./sampleImage/personalMessage.JPG)
 
 # start
 - 監聽127.0.0.1:2000

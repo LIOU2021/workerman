@@ -100,7 +100,7 @@ class MessageService
                 case 'user':
                     if (isset($json['to_user'])) {
                         $connectId = explode("_", $json['to_user'])[1];
-                        $reply = "用户id[{$connection->id}] 私下 说: {$json['msg']}";
+                        $reply = $json['msg'];
                         self::toUser($worker, $connection, $connectId, $reply);
                     } else {
                         $res = json_encode(helpReturn(403, $json));

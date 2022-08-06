@@ -63,6 +63,11 @@ function addChatRoomList(uid, connectionId) {
         return false;
     }
 
+    let exists = $(`.chatRoom-${connectionId}`).length;
+    if(exists){
+        return false;
+    }
+
     let chatRoomHtml = '';
     chatRoomHtml = `<div class="card chatRoom-hide chatRoom-${connectionId}">
     <div class="card-header msg_head">
@@ -244,6 +249,7 @@ function proccessWsMessage(msg) {
                 $(".chatRoom-0>.msg_card_body").append(onlineHtml);
                 break;
             case 'onMessage':
+
                 let to_connectionId = '';
                 let isSender = data.data.sender;
                 let to_Uid = '';
@@ -258,6 +264,8 @@ function proccessWsMessage(msg) {
                     to_Uid = data.data.from_Uid;
                     from_connectionId = data.data.to_connectionId;
                     from_Uid = data.data.to_Uid;
+                    addAllPeople(to_Uid,to_connectionId);
+                    // addChatRoomList(to_Uid, to_connectionId);
                 }
 
 
