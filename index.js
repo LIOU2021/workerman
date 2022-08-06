@@ -52,6 +52,10 @@ function addUserList(uid, connectionId) {
     return true;
 }
 
+function deleteUserList(uid){
+    $(`[data-uid='${uid}']`).parent().remove()
+}
+
 function deleteAllPeople(uid) {
     delete $allPeople[uid];
 }
@@ -120,6 +124,7 @@ function proccessWsMessage(msg) {
                 let uid = data.data.uid;
 
                 deleteAllPeople(uid);
+                deleteUserList(uid);
 
                 onlineHtml = `
                 <div class="d-flex justify-content-center ">
