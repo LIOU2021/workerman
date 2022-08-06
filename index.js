@@ -13,13 +13,13 @@ function inputKeyupEvent(e) {
 }
 
 function senderEvent() {
-    let message='';
-    if($chatRoomId != 0){
+    let message = '';
+    if ($chatRoomId != 0) {
         message = $(`.chatRoom-${$chatRoomId} .type_msg`).val();
-    }else{
+    } else {
         message = $(".type_msg").val();
     }
-    
+
     let msgType = '';
     let msg = "";
 
@@ -286,7 +286,15 @@ function proccessWsMessage(msg) {
                 </div>
                 `;
                 }
-                $(`.chatRoom-${from_Uid}>.card-body.msg_card_body`).append(onlineHtml);
+
+                let roomId = '';
+
+                roomId = to_connectionId;
+
+
+
+                console.log(`.chatRoom-${roomId}>.card-body.msg_card_body`);
+                $(`.chatRoom-${roomId}>.card-body.msg_card_body`).append(onlineHtml);
                 break;
             default:
                 console.log('未定義此訊息格式')
