@@ -17,11 +17,15 @@ function addAllPeople(uid, connectionId) {
 }
 
 function userListEvent(_this) {
-    // $().addClass("");
+
     // .d-none
     // .d-block
-    // console.log($(this).data('connect-id'));
+
     console.log($(_this).data('connect-id'));
+    // console.log($(_this));
+
+    $('.active').removeClass('active');
+    $(_this).parent().addClass('active');
 }
 
 function addUserList(uid, connectionId) {
