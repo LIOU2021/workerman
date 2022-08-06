@@ -13,7 +13,13 @@ function inputKeyupEvent(e) {
 }
 
 function senderEvent() {
-    let message = $(".type_msg").val();
+    let message='';
+    if($chatRoomId != 0){
+        message = $(`.chatRoom-${$chatRoomId} .type_msg`).val();
+    }else{
+        message = $(".type_msg").val();
+    }
+    
     let msgType = '';
     let msg = "";
 
@@ -237,45 +243,51 @@ function proccessWsMessage(msg) {
 
                 $(".chatRoom-0>.msg_card_body").append(onlineHtml);
                 break;
-            // case 'onMessage':
-            //     let to_connectionId = '';
-            //     let isSender = data.data.sender;
-            //     if (isSender) {
-            //         from_connectionId = data.data.from_connectionId;
-            //         to_connectionId = data.data.to_connectionId;
-            //     } else {
-            //         to_connectionId = data.data.from_connectionId;
-            //         from_connectionId = data.data.to_connectionId;
-            //     }
+            case 'onMessage':
+                let to_connectionId = '';
+                let isSender = data.data.sender;
+                let to_Uid = '';
+                let from_Uid = '';
+                if (isSender) {
+                    from_connectionId = data.data.from_connectionId;
+                    from_Uid = data.data.from_Uid;
+                    to_connectionId = data.data.to_connectionId;
+                    to_Uid = data.data.to_Uid;
+                } else {
+                    to_connectionId = data.data.from_connectionId;
+                    to_Uid = data.data.from_Uid;
+                    from_connectionId = data.data.to_connectionId;
+                    from_Uid = data.data.to_Uid;
+                }
 
 
 
-            //     if (isSender) {
-            //         onlineHtml = `
-            //     <div class="d-flex justify-content-end mb-4">
-            //         <div class="msg_cotainer_send">
-            //             <span class="msg_name_send">
-            //                 ${from_uid}
-            //             </span>
-            //             ${data.data.msg}
-            //             <span class="msg_time_send">${data.datetime}</span>
-            //         </div>
-            //     </div>`;
-            //     } else {
-            //         onlineHtml = `
-            //         <div class="d-flex justify-content-start mb-4">
-            //         <div class="msg_cotainer" style="background-color:${$allPeople[from_uid].color}">
-            //             <span class="msg_name">
-            //                 ${from_uid}
-            //             </span>
-            //             ${data.data.msg}
-            //             <span class="msg_time">${data.datetime}</span>
-            //         </div>
-            //     </div>
-            //     `;
-            //     }
-            //     $(".chatRoom-0>.card-body.msg_card_body").append(onlineHtml);
-            //     break;
+                if (isSender) {
+                    onlineHtml = `
+                <div class="d-flex justify-content-end mb-4">
+                    <div class="msg_cotainer_send">
+                        <span class="msg_name_send">
+                            ${from_Uid}
+                        </span>
+                        ${data.data.msg}
+                        <span class="msg_time_send">${data.datetime}</span>
+                    </div>
+                </div>`;
+                } else {
+                    onlineHtml = `
+                    <div class="d-flex justify-content-start mb-4">
+                    <div class="msg_cotainer" style="background-color:${$allPeople[to_Uid].color}">
+                        <span class="msg_name">
+                            ${to_Uid}
+                        </span>
+                        ${data.data.msg}
+                        <span class="msg_time">${data.datetime}</span>
+                    </div>
+                </div>
+                `;
+                }
+                $(`.chatRoom-${from_Uid}>.card-body.msg_card_body`).append(onlineHtml);
+                break;
             default:
                 console.log('未定義此訊息格式')
                 console.log(data)
