@@ -133,7 +133,7 @@ class MessageService
     {
         $res['type'] = 'onMessage';
         $res['from'] = $connection->id;
-        $res['to'] = $connectId;
+        $res['to'] = $worker->id."_".$connectId;
         $res['msg'] = $reply;
 
 

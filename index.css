@@ -291,3 +291,10 @@ html {
         margin-bottom: 15px !important;
     }
 }
+
+.chatRoom-show{
+    display: flex !important;
+}
+.chatRoom-hide{
+    display: none !important;
+}

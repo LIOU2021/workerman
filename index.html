@@ -27,24 +27,12 @@
             //進行socket連線
             connect();
 
-            $(".send_btn").on('click', function () {
-                let message = $(".type_msg").val();
-
-                let msg = {
-                    type: 'message',
-                    to: 'all',
-                    msg: message,
-                };
-                $ws.send(JSON.stringify(msg));
-
-                $(".type_msg").val("");
+            $(".chatRoom-0 .send_btn").on('click', function () {
+                senderEvent();
             });
 
-            $(".form-control.type_msg").keyup(function (e) {
-                var code = e.keyCode ? e.keyCode : e.which;
-                if (code == 13) {  // Enter keycode
-                    $(".send_btn").click();
-                }
+            $(`.chatRoom-${$chatRoomId} .form-control.type_msg`).keyup(function (e) {
+                inputKeyupEvent(e);
             });
 
             $('#action_menu_btn').click(function () {
@@ -125,8 +113,8 @@
                     <div class="card-footer"></div>
                 </div>
             </div>
-            <div class="col-md-8 col-xl-6 chat">
-                <div class="card">
+            <div class="col-md-8 col-xl-6 chat chatRoom-body">
+                <div class="card chatRoom-show chatRoom-0">
                     <div class="card-header msg_head">
                         <div class="d-flex bd-highlight">
                             <!-- <div class="img_cont">

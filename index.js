@@ -3,7 +3,39 @@ var $myUid = '';
 var $myConnectId = '';
 var $inputUid = '';
 var $allPeople = {};
+var $chatRoomId = 0;
 
+function inputKeyupEvent(e) {
+    var code = e.keyCode ? e.keyCode : e.which;
+        if (code == 13) {  // Enter keycode
+            $(`.chatRoom-${$chatRoomId} .send_btn`).click();
+        }
+}
+function senderEvent() {
+    let message = $(".type_msg").val();
+    let msgType = '';
+    let msg = "";
+
+    switch ($chatRoomId) {
+        case 0:
+            msgType = 'all';
+            break;
+        default:
+            msgType = 'user';
+            break;
+    }
+
+    msg = {
+        type: 'message',
+        to: msgType,
+        to_user: $chatRoomId,
+        msg: message,
+    };
+
+    $ws.send(JSON.stringify(msg));
+
+    $(".type_msg").val("");
+}
 function addAllPeople(uid, connectionId) {
     if (!$allPeople.hasOwnProperty(uid)) {
         let randomColor = "#" + Math.floor(Math.random() * 16777215).toString(16);
@@ -13,19 +45,84 @@ function addAllPeople(uid, connectionId) {
         };
 
         addUserList(uid, connectionId);
+        console.log('add UserList after : '+$chatRoomId);
+        addChatRoomList(uid, connectionId);
     };
+}
+
+function addChatRoomList(uid, connectionId) {
+    if ($myConnectId == connectionId) {
+        return false;
+    }
+
+    let chatRoomHtml = '';
+    chatRoomHtml = `<div class="card chatRoom-hide chatRoom-${connectionId}">
+    <div class="card-header msg_head">
+        <div class="d-flex bd-highlight">
+            <div class="user_info">
+                <span>${uid}</span>
+            </div>
+
+        </div>
+        <span id="action_menu_btn"><i class="fas fa-ellipsis-v"></i></span>
+        <div class="action_menu">
+            <ul>
+                <li><i class="fas fa-user-circle"></i> View profile</li>
+                <li><i class="fas fa-users"></i> Add to close friends</li>
+                <li><i class="fas fa-plus"></i> Add to group</li>
+                <li><i class="fas fa-ban"></i> Block</li>
+            </ul>
+        </div>
+    </div>
+    <div class="card-body msg_card_body">
+
+    
+    </div>
+    <div class="card-footer">
+        <div class="input-group">
+            <textarea name="" class="form-control type_msg"
+                placeholder="Type your message..."></textarea>
+            <div class="input-group-append">
+                <span class="input-group-text send_btn"><i class="fas fa-location-arrow"></i></span>
+            </div>
+        </div>
+    </div>
+</div>`;
+    $(".chatRoom-body").append(chatRoomHtml);
+
+    $(`.chatRoom-${connectionId} .send_btn`).on('click', function () {
+        console.log('sender...');
+        senderEvent();
+    });
+    
+
+    $(`.chatRoom-${connectionId} .form-control.type_msg`).keyup(function (e) {
+        inputKeyupEvent(e);
+    });
+
+    return true;
+}
+
+function deleteChatRoomList(connection_id) {
+
+    $(`.chatRoom-${connection_id}`).remove();
 }
 
 function userListEvent(_this) {
 
-    // .d-none
-    // .d-block
+    let connectId = $(_this).data('connect-id');
+    $chatRoomId = connectId;
+    console.log("更改chatRoomId 觸發事件 : "+$chatRoomId);
+    let uid = $(_this).data('uid');
 
-    console.log($(_this).data('connect-id'));
-    // console.log($(_this));
 
     $('.active').removeClass('active');
     $(_this).parent().addClass('active');
+
+    $(".chatRoom-show").addClass("chatRoom-hide");
+    $(".chatRoom-show").removeClass("chatRoom-show");
+    $(`.chatRoom-${$chatRoomId}`).removeClass("chatRoom-hide");
+    $(`.chatRoom-${$chatRoomId}`).addClass('chatRoom-show');
 }
 
 function addUserList(uid, connectionId) {
@@ -52,7 +149,7 @@ function addUserList(uid, connectionId) {
     return true;
 }
 
-function deleteUserList(uid){
+function deleteUserList(uid) {
     $(`[data-uid='${uid}']`).parent().remove()
 }
 
@@ -80,7 +177,7 @@ function proccessWsMessage(msg) {
                     </div>
                 </div>`;
 
-                $(".msg_card_body").append(onlineHtml);
+                $(".chatRoom-0>.card-body.msg_card_body").append(onlineHtml);
 
                 break;
             case 'onConnect':
@@ -116,15 +213,16 @@ function proccessWsMessage(msg) {
                 </div>
                 `;
                 }
-                $(".card-body.msg_card_body").append(onlineHtml);
+                $(".chatRoom-0>.card-body.msg_card_body").append(onlineHtml);
                 break;
             // case 'infor':
             //     break;
             case 'onClose':
                 let uid = data.data.uid;
-
+                let connection_id = data.data.connection_id;
                 deleteAllPeople(uid);
                 deleteUserList(uid);
+                deleteChatRoomList(connection_id);
 
                 onlineHtml = `
                 <div class="d-flex justify-content-center ">
@@ -133,7 +231,7 @@ function proccessWsMessage(msg) {
                     </div>
                 </div>`;
 
-                $(".msg_card_body").append(onlineHtml);
+                $(".chatRoom-0>.msg_card_body").append(onlineHtml);
                 break;
             // case 'onMessage':
             //     break;
