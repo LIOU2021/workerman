@@ -262,7 +262,6 @@ function proccessWsMessage(msg) {
                     from_connectionId = data.data.to_connectionId;
                     from_Uid = data.data.to_Uid;
                     addAllPeople(to_Uid,to_connectionId);
-                    // addChatRoomList(to_Uid, to_connectionId);
                 }
 
 
