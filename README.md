@@ -8,6 +8,7 @@
 - 監聽127.0.0.1:2000
 - 不同worker(proccess/進程)不能溝通
 - connect id 編制規則為: workerId_connectId
+- 環境設置在:./src/Config/App
 
 # data from client
 - type : message/info/bind。message表示當通訊用。info表示獲取worker相關資訊。bind表示綁定uid。
@@ -24,13 +25,14 @@
 - [使用 Workerman 做一个聊天室](https://learnku.com/articles/30160)
 - [chatroom template](https://bootsnipp.com/fullscreen/nNg98)
 # return message sample
-- data.type 狀態 : onConnect/onMessage/onClose/onAll/onBind/infor/
+- data.type 狀態 : onConnect/onMessage/onClose/onAll/onBind/infor/onAutoReload
 - onConnect : 群體訊息/自己
 - onMessage : 一對一聊天
 - onClose : 群體訊息
 - onAll : 群體訊息
 - onBind : 群體訊息
-- info : 發送者才收的到
+- info : 自己
+- onAutoReload : 群體訊息
 
 ```json
 {

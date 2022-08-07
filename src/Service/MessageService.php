@@ -44,6 +44,14 @@ class MessageService
         self::toAll($worker, $msg);
     }
 
+    public static function onAutoReload(Worker $worker)
+    {
+        $replyMsg = [
+            'type' => 'onAutoReload'
+        ];
+        self::toAll($worker, $replyMsg);
+    }
+
     private static function readType(Worker $worker, TcpConnection $connection, $msg)
     {
         $json = json_decode($msg, true);

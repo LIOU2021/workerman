@@ -146,7 +146,8 @@ $worker->onMessage = function (TcpConnection $connection, $data) use ($worker) {
     // 如果请求数达到1000
     if (++$request_count >= MAX_REQUEST) {
         echo 'auto reload workerman' . "\n";
-        /*
+        MessageService::onAutoReload($worker);
+    /*
     * 退出当前进程，主进程会立刻重新启动一个全新进程补充上来
     * 从而完成进程重启
     */

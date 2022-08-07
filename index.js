@@ -364,4 +364,9 @@ function connect() {
         proccessWsMessage(e.data);
 
     };
+
+    $ws.onclose = function() {
+        console.log("关闭连接");
+        alert('websocket已關閉');
+    }
 }
