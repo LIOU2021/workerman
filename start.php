@@ -55,6 +55,10 @@ $worker->onWorkerStart = function ($worker) {
         $result['yourself']=true;
         $result['connection_id']=$connection->id;
         $result['uid']=$connection->uid;
+        $result['online']=[
+            'users'=>$GLOBALS['users'],
+            'users2'=>$GLOBALS['users2'],
+        ];
         $connection->send(json_encode(helpReturn(200,$result)));
         
         echo $msg . "\n";

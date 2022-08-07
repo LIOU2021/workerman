@@ -63,7 +63,7 @@ function addChatRoomList(uid, connectionId) {
     }
 
     let exists = $(`.chatRoom-${connectionId}`).length;
-    if(exists){
+    if (exists) {
         return false;
     }
 
@@ -193,6 +193,17 @@ function proccessWsMessage(msg) {
 
                 break;
             case 'onConnect':
+                if (data.data.yourself) {
+                    let users = data.data.online.users;
+                    let usersKey = Object.keys(users);
+                    let usersLength = usersKey.length;
+                    if(usersLength){
+                        usersKey.forEach(function (item, index) {
+                            addAllPeople(item, users[item]);
+                        });
+                    }
+                }
+
 
                 break;
             case 'onAll':
@@ -261,7 +272,7 @@ function proccessWsMessage(msg) {
                     to_Uid = data.data.from_Uid;
                     from_connectionId = data.data.to_connectionId;
                     from_Uid = data.data.to_Uid;
-                    addAllPeople(to_Uid,to_connectionId);
+                    addAllPeople(to_Uid, to_connectionId);
                 }
 
 
