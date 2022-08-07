@@ -14,11 +14,7 @@ function inputKeyupEvent(e) {
 
 function senderEvent() {
     let message = '';
-    if ($chatRoomId != 0) {
-        message = $(`.chatRoom-${$chatRoomId} .type_msg`).val();
-    } else {
-        message = $(".type_msg").val();
-    }
+    message = $(`.chatRoom-${$chatRoomId} .type_msg`).val();
 
     let msgType = '';
     let msg = "";
@@ -41,7 +37,7 @@ function senderEvent() {
 
     $ws.send(JSON.stringify(msg));
 
-    $(".type_msg").val("");
+    $(`.chatRoom-${$chatRoomId} .type_msg`).val("");
 }
 
 function addAllPeople(uid, connectionId) {
