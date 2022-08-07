@@ -90,7 +90,7 @@ class MessageService
 
             switch ($json['to']) {
                 case 'all':
-                    $replyMsg['type'] = 'onGroup';
+                    $replyMsg['type'] = 'onAll';
                     $replyMsg['msg'] = $json['msg'];
                     $replyMsg['from_connectionId'] = $connection->id;
                     $replyMsg['from_uid'] = $connection->uid;

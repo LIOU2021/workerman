@@ -195,7 +195,7 @@ function proccessWsMessage(msg) {
             case 'onConnect':
 
                 break;
-            case 'onGroup':
+            case 'onAll':
 
                 from_uid = data.data.from_uid;
                 from_connectionId = data.data.from_connectionId;

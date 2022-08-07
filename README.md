@@ -24,11 +24,11 @@
 - [使用 Workerman 做一个聊天室](https://learnku.com/articles/30160)
 - [chatroom template](https://bootsnipp.com/fullscreen/nNg98)
 # return message sample
-- data.type 狀態 : onConnect/onMessage/onClose/onGroup/onBind/infor/
+- data.type 狀態 : onConnect/onMessage/onClose/onAll/onBind/infor/
 - onConnect : 群體訊息/自己
 - onMessage : 一對一聊天
 - onClose : 群體訊息
-- onGroup : 群體訊息
+- onAll : 群體訊息
 - onBind : 群體訊息
 - info : 發送者才收的到
 
