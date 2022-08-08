@@ -9,7 +9,7 @@
 - 不同worker(proccess/進程)不能溝通
 - connect id 編制規則為: workerId_connectId
 - 環境設置在:./src/Config/App.php
-- daemon背景執行下，log預設存放在 "./log/workerman2.log"
+- daemon背景執行下，log預設存放在 "./log/workerman2.log"。注意Worker::$stdoutFile指定的路径要有可写权限。
 
 
 # data from client
