@@ -8,7 +8,9 @@
 - 監聽127.0.0.1:2000
 - 不同worker(proccess/進程)不能溝通
 - connect id 編制規則為: workerId_connectId
-- 環境設置在:./src/Config/App
+- 環境設置在:./src/Config/App.php
+- daemon背景執行下，log預設存放在 "./log/workerman2.log"
+
 
 # data from client
 - type : message/info/bind。message表示當通訊用。info表示獲取worker相關資訊。bind表示綁定uid。

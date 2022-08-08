@@ -15,6 +15,9 @@ $worker = new Worker("websocket://0.0.0.0:".env('port',2000));
 
 // 设置实例的名称
 $worker->name = 'MyWebsocketWorker';
+// 将屏幕打印输出到Worker::$stdoutFile指定的文件中
+Worker::$stdoutFile = env("Log_FILE",'./log/workerman2.log');
+
 
 // 每个进程最多执行1000个请求
 define('MAX_REQUEST', env("MAX_REQUEST",1000));

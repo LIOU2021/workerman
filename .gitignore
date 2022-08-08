@@ -6,3 +6,4 @@ logs
 .DS_Store
 vendor/
 _var_www_html_start.php.pid
+*.log

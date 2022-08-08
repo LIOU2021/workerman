@@ -36,6 +36,7 @@ class App
         "MAX_REQUEST" => 1000,
         "MUST_UID" => false,
         "TIME_ZONE" => "Asia/Taipei",
+        "Log_FILE" => "./log/workerman2.log",
     ];
 
     public static function generatorErrorCode(int $code)
