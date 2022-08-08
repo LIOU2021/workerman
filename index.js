@@ -72,7 +72,7 @@ function addChatRoomList(uid, connectionId) {
             </div>
 
         </div>
-        <span id="action_menu_btn"><i class="fas fa-ellipsis-v"></i></span>
+        <span id=""><i class="fas fa-ellipsis-v action_menu_btn"></i></span>
         <div class="action_menu">
             <ul>
                 <li><i class="fas fa-user-circle"></i> View profile</li>
@@ -102,6 +102,9 @@ function addChatRoomList(uid, connectionId) {
         senderEvent();
     });
 
+    $(`.chatRoom-${connectionId} .action_menu_btn`).on('click', function () {
+        $(`.chatRoom-${connectionId} .action_menu`).toggle();
+    });
 
     $(`.chatRoom-${connectionId} .form-control.type_msg`).keyup(function (e) {
         inputKeyupEvent(e);
@@ -193,7 +196,7 @@ function proccessWsMessage(msg) {
                     let users = data.data.online.users;
                     let usersKey = Object.keys(users);
                     let usersLength = usersKey.length;
-                    if(usersLength){
+                    if (usersLength) {
                         usersKey.forEach(function (item, index) {
                             addAllPeople(item, users[item]);
                         });
@@ -365,7 +368,7 @@ function connect() {
 
     };
 
-    $ws.onclose = function() {
+    $ws.onclose = function () {
         console.log("关闭连接");
         alert('websocket已關閉');
     }

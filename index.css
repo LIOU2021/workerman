@@ -243,7 +243,7 @@ html {
     position: relative;
 }
 
-#action_menu_btn {
+.action_menu_btn {
     position: absolute;
     right: 10px;
     top: 10px;
