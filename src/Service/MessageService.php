@@ -7,11 +7,11 @@ use Workerman\Worker;
 
 class MessageService
 {
-    public static function onConnect(Worker $worker, mixed $connectionId)
+    public static function onConnect(Worker $worker, mixed $connectionId, TcpConnection $connection)
     {
         $res['type'] = 'onConnect';
         $res['yourself'] = false;
-        $res['uid'] = $connectionId->uid;
+        $res['uid'] = $connection->uid;
         $res['connection_id'] = $connectionId;
         self::toAll($worker, $res);
     }

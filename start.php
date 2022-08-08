@@ -62,7 +62,7 @@ $worker->onWorkerStart = function ($worker) {
         $connection->send(json_encode(helpReturn(200,$result)));
         
         echo $msg . "\n";
-        MessageService::onConnect($worker, $connection->id);
+        MessageService::onConnect($worker, $connection->id,$connection);
         echo "-------------------\n";
     };
 
